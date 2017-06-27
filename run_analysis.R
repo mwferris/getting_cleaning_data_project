@@ -4,13 +4,6 @@
 ## every variable in the merged_data set broken down by subjectid
 ## and activityname.
 
-## checks to see if dlpyr is installed, if it is not, it will install it,
-## credit to StackOverflow user Shane
-list.of.packages <- c("dplyr")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-library(dplyr)
-
 ## download the file into a temp file, and unzip
 fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 temp <- tempfile()
@@ -48,10 +41,10 @@ x_test <- read.table("UCI HAR Dataset/test/X_test.txt", header = FALSE,
 ## create the test_data set, only include the columns from x_test that are mean() and std()
 ## intentionally not including the frequency mean and other means because from my understanding
 ## of the question they are not required.
-train_data <- cbind(subject_test, y_test, x_test[, grepl("*mean\\(|std\\(*", names(x_test))])
+train_data <- cbind(subject_test, y_test, x_test[, grepl("\\.mean\\.|\\.std\\.", names(x_test))])
 
 ##create the train_data set, include the same columns as the test data set from x_train
-test_data <- cbind(subject_train, y_train, x_train[, grepl("*mean\\(|std\\(*", names(x_train))])
+test_data <- cbind(subject_train, y_train, x_train[, grepl("\\.mean\\.|\\.std\\.", names(x_train))])
 
 ##merge the two data sets
 merged_data <- merge(test_data, train_data, all = TRUE, sort = FALSE)
@@ -68,7 +61,7 @@ tidy_summary <- merged_data%>%
   group_by(subjectid, activityname) %>% 
   summarize_all(mean)
 
-## remove all data we no longer need from the global environment
+# remove all data we no longer need from the global environment
 rm(list = c("activity_labels", "features", "subject_train", "subject_test",
      "x_train", "x_test", "y_train", "y_test",
      "train_data","test_data"))
