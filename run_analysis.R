@@ -1,8 +1,20 @@
-fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+## This script downloads a data set containing smartphone sensor data
+## and combines all the data into one data frame, merged_data. It also
+## creates another data set, tidy_data, containing the average of 
+## every variable in the merged_data set broken down by subjectid
+## and activityname.
 
+## checks to see if dlpyr is installed, if it is not, it will install it,
+## credit to StackOverflow user Shane
+list.of.packages <- c("dplyr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+library(dplyr)
+
+## download the file into a temp file, and unzip
+fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 temp <- tempfile()
 download.file(fileUrl, destfile = temp)
-
 unzip(temp)
 
 ## load in all descriptive data
@@ -33,7 +45,6 @@ y_test <- read.table("UCI HAR Dataset/test/y_test.txt", header = FALSE,
 x_test <- read.table("UCI HAR Dataset/test/X_test.txt", header = FALSE,
                      col.names = features$feature)
 
-
 ## create the test_data set, only include the columns from x_test that are mean() and std()
 ## intentionally not including the frequency mean and other means because from my understanding
 ## of the question they are not required.
@@ -50,7 +61,6 @@ merged_data <- merge(merged_data, activity_labels)
 
 ## remove the activityid column, as it was replaced with the activityname
 merged_data$activityid <- NULL
-
 
 ## create a new tidy data set containing means for all variables
 ## broken down by subjectid and activityname
