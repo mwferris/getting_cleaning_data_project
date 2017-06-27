@@ -12,4 +12,5 @@ automatically if it is not on the computer.
 
 ## Versions
 dplyr - 0.7.0
-R - 3.4.0      
+
+R - 3.4.0
